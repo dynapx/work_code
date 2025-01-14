@@ -1,0 +1,27 @@
+clang -Xclang -ast-dump -fsyntax-only example.c -I/usr/include/python3.12
+
+clang --analyze -Xanalyzer -analyzer-checker=alpha.core.PythonExtensions spammodule.c -I/usr/include/python3.12  -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/
+
+
+tensorflow :
+-I/usr/include/python3.12
+-I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/
+-I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/numpy/_core/include/
+-I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/external/pybind11/include/
+-I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/external/farmhash_archive/src/
+-I/home/dingqiuran/test/tensorflow/third_party/xla/
+-I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/numpy/f2py/src/
+
+
+ clang --analyze -Xanalyzer -analyzer-checker=alpha.core.PythonExtensions /home/dingqiuran/test/tensorflow/tensorflow/python/util/fast_module_type.cc
+ -I/usr/include/python3.12 -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/ -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/numpy/_core/include/ -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/external/pybind11/include/ -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/external/farmhash_archive/src/ -I/home/dingqiuran/test/tensorflow/third_party/xla/ -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/numpy/f2py/src/ -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/external/farmhash_archive/src/
+
+
+
+
+
+
+pytorch:
+
+clang --analyze -Xanalyzer -analyzer-checker=alpha.core.PythonExtensions /home/dingqiuran/test/pytorch/tools/autograd/templates/python_torch_functions.cpp -I/usr/include/python3.12 -I/home/dingqiuran/test/pytorch -I/home/dingqiuran/test/pytorch/aten/src/ -I/home/dingqiuran/test/pytorch/build/aten/src/ -I/home/dingqiuran/test/pytorch/build/ -I/home/dingqiuran/test/pytorch/third_party/pybind11/include/ -I/home/dingqiuran/test/pytorch/third_party/fmt/include/ -I/home/dingqiuran/test/tensorflow/.venv/lib/python3.12/site-packages/tensorflow/include/external/farmhash_archive/src/
+
