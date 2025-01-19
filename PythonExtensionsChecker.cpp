@@ -60,6 +60,24 @@ const Expr* findDeclRefExpr(const Expr* expr)
 }
 
 
+void find_PyMemberDef(const VarDecl * varDecl)
+{
+    const ArrayType *arrType=varDecl->getType()->getAsArrayTypeUnsafe();
+    if(!arrType) return;
+    const RecordType *recordType =arrType->getElementType()->getAs<RecordType>();
+    if(!recordType) return;
+    const RecordDecl *recordDecl=recordType->getDecl();
+    if(recordDecl->getNameAsString()=="PyMemberDef")
+    {
+        llvm::outs()<<"Found PyMemberDef array"<<varDecl->getNameAsString()<<"\n";
+    }
+
+
+    return ;
+
+}
+
+
 // 在类外实现方法
 void PythonExtensionsChecker::checkASTDecl(const Decl *D, AnalysisManager &Mgr, BugReporter &BR) const {
     // 确保是全局变量声明
@@ -280,49 +298,35 @@ void PythonExtensionsChecker::checkASTDecl(const Decl *D, AnalysisManager &Mgr, 
 
 
 
- //以下对类进行分析
+//find_PyMemberDef(varDecl);
 
-    //此时首先要确定类的PyTypeObject类型
-    std::string typeStr=varDecl->getType().getAsString();
-    if(typeStr=="PyTypeObject")
-    {
-        const Expr * initExpr0=varDecl->getInit();
-        if(!initExpr0) return;
-        
-        
-            if(const InitListExpr* initExpr=dyn_cast<InitListExpr>(initExpr0))
-        {
-             for(const auto & elem :initExpr->children())
-            {
-                 if(const Expr* subExpr=dyn_cast<Expr>(elem))
-                 {
-                     if(findDeclRefExpr(subExpr))
-                     {
-                        if(const DeclRefExpr* declrefexpr=dyn_cast<DeclRefExpr>(findDeclRefExpr(subExpr)))
-                         {
-                            llvm::outs()<<declrefexpr->getNameInfo().getAsString()<<"\n";
+    // 以下对类进行分析
 
-                        }
+    // 此时首先要确定类的PyTypeObject类型
+    std::string typeStr = varDecl->getType().getAsString();
+    if (typeStr == "PyTypeObject") {
+      const Expr *initExpr0 = varDecl->getInit();
+      if (!initExpr0)
+        return;
 
-                }
-                
-
-                 }
-                
-             }
-           
-
+      if (const InitListExpr *initExpr = dyn_cast<InitListExpr>(initExpr0)) {
+        for (const auto &elem : initExpr->children()) {
+          if (const Expr *subExpr = dyn_cast<Expr>(elem)) {
+            if (findDeclRefExpr(subExpr)) {
+              if (const DeclRefExpr *declrefExpr =
+                      dyn_cast<DeclRefExpr>(findDeclRefExpr(subExpr))) {
+                 if (declrefExpr->getType().getAsString().substr(0,11)=="PyMemberDef")
+                  continue ;
+               
+                //llvm::outs() << declrefExpr->getType().getAsString().substr(0,11) << ":";
+                llvm::outs()
+                    << declrefExpr->getNameInfo().getAsString() << "\n";
+              }
+            }
+          }
         }
-           
-
-        
-        
-        
-
+      }
     }
-
-
-
 }
 
 namespace clang::ento
